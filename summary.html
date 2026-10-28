@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>8강 학습 정리</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap');
+
+:root{
+  --bg:#0b0e17;--card:#141926;--card2:#1a2035;
+  --accent:#00d4ff;--accent2:#7b61ff;--accent3:#ff6b9d;--accent4:#00e676;
+  --green:#00e676;--red:#ff5252;--orange:#ffab40;--blue:#448aff;
+  --text:#e4e8f1;--text2:#8892a6;
+  --glow:0 0 20px rgba(0,212,255,.3);
+  --glow2:0 0 20px rgba(123,97,255,.3);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font:16px/1.8 'Noto Sans KR',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+/* ── 배경 파티클 ── */
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(circle at 1px 1px, rgba(0,212,255,.07) 1px, transparent 0);
+  background-size:48px 48px}
+.bg-orb{position:fixed;border-radius:50%;filter:blur(100px);opacity:.15;z-index:0;pointer-events:none;animation:orbFloat 20s ease-in-out infinite}
+.bg-orb.o1{width:600px;height:600px;background:var(--accent);top:-200px;left:-100px}
+.bg-orb.o2{width:500px;height:500px;background:var(--accent2);bottom:-150px;right:-100px;animation-delay:-10s}
+.bg-orb.o3{width:400px;height:400px;background:var(--accent3);top:50%;left:60%;animation-delay:-5s}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-60px) scale(1.1)}}
+
+.wrap{max-width:900px;margin:0 auto;padding:32px 16px;position:relative;z-index:1}
+
+/* ── 히어로 ── */
+.hero{text-align:center;padding:80px 20px 60px;animation:fadeUp .8s ease-out}
+.hero-badge{display:inline-block;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  font-size:.85rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px}
+.hero h1{font-size:2.4rem;font-weight:900;line-height:1.3;margin-bottom:16px}
+.hero h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{color:var(--text2);font-size:1.1rem;max-width:600px;margin:0 auto 32px}
+.hero-quote{background:var(--card);border:1px solid rgba(0,212,255,.2);border-radius:16px;padding:20px 28px;
+  font-size:1.05rem;font-weight:500;position:relative;display:inline-block;max-width:700px;
+  box-shadow:var(--glow)}
+.hero-quote::before{content:'"';position:absolute;top:-10px;left:16px;font-size:3rem;color:var(--accent);opacity:.5}
+
+/* ── 섹션 ── */
+.section{margin:60px 0;opacity:0;transform:translateY(40px);transition:all .6s ease-out}
+.section.visible{opacity:1;transform:translateY(0)}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.section-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;flex-shrink:0}
+.section-icon.blue{background:rgba(68,138,255,.15);box-shadow:0 0 20px rgba(68,138,255,.1)}
+.section-icon.purple{background:rgba(123,97,255,.15);box-shadow:0 0 20px rgba(123,97,255,.1)}
+.section-icon.green{background:rgba(0,230,118,.15);box-shadow:0 0 20px rgba(0,230,118,.1)}
+.section-icon.orange{background:rgba(255,171,64,.15);box-shadow:0 0 20px rgba(255,171,64,.1)}
+.section-icon.pink{background:rgba(255,107,157,.15);box-shadow:0 0 20px rgba(255,107,157,.1)}
+.section-title{font-size:1.5rem;font-weight:700}
+
+/* ── 카드 ── */
+.card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:24px;margin:16px 0;
+  transition:all .3s ease;position:relative;overflow:hidden}
+.card:hover{border-color:rgba(0,212,255,.2);transform:translateY(-2px);box-shadow:var(--glow)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity .3s}
+.card:hover::before{opacity:1}
+.card h3{font-size:1.15rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card p,.card li{color:var(--text2);font-size:.95rem}
+.card ul,.card ol{margin:8px 0 8px 20px}
+.card li{margin:4px 0}
+.card strong{color:var(--text)}
+
+/* ── 나인 테이블 ── */
+.nine-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+.nine-card{background:var(--card2);border-radius:12px;padding:16px;text-align:center;border:1px solid rgba(255,255,255,.04);
+  transition:all .4s ease}
+.nine-card:hover{border-color:var(--accent);box-shadow:var(--glow)}
+.nine-val{font-size:2rem;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nine-label{font-size:.8rem;color:var(--text2);margin-top:4px}
+.nine-time{font-size:.95rem;font-weight:600;color:var(--orange);margin-top:8px}
+
+/* ── 배포 비교 ── */
+.deploy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:16px 0}
+.deploy-card{background:var(--card2);border-radius:14px;padding:20px;border:1px solid rgba(255,255,255,.04);
+  transition:all .4s ease;position:relative;overflow:hidden}
+.deploy-card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.deploy-card.rolling{border-top:3px solid var(--blue)}
+.deploy-card.bluegreen{border-top:3px solid var(--green)}
+.deploy-card.canary{border-top:3px solid var(--orange)}
+.deploy-card h4{font-size:1.1rem;font-weight:700;margin-bottom:8px}
+.deploy-card p{font-size:.88rem;color:var(--text2)}
+.deploy-tag{display:inline-block;font-size:.75rem;font-weight:600;padding:3px 10px;border-radius:20px;margin-top:12px}
+.deploy-tag.pro{background:rgba(0,230,118,.12);color:var(--green)}
+.deploy-tag.con{background:rgba(255,82,82,.12);color:var(--red)}
+
+/* ── 아키텍처 다이어그램 ── */
+.arch-diagram{background:var(--card2);border-radius:16px;padding:32px;margin:20px 0;text-align:center;
+  border:1px solid rgba(0,212,255,.1)}
+.arch-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;margin:20px 0}
+.arch-node{background:var(--card);border:2px solid;border-radius:12px;padding:14px 20px;min-width:100px;
+  text-align:center;position:relative;transition:all .3s}
+.arch-node.browser{border-color:var(--accent3)}
+.arch-node.nginx{border-color:var(--accent);box-shadow:var(--glow)}
+.arch-node.server-blue{border-color:var(--blue)}
+.arch-node.server-green{border-color:var(--green)}
+.arch-node .icon{font-size:1.8rem;display:block;margin-bottom:4px}
+.arch-node .label{font-size:.85rem;font-weight:600}
+.arch-arrow{color:var(--accent);font-size:1.5rem;margin:0 8px;animation:arrowPulse 1.5s ease-in-out infinite}
+.arch-arrow.split{display:flex;flex-direction:column;gap:4px}
+@keyframes arrowPulse{0%,100%{opacity:.4}50%{opacity:1}}
+.arch-branch{display:flex;flex-direction:column;gap:12px}
+
+/* ── 실험 결과 카운터 ── */
+.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:16px 0}
+.result-stat{background:var(--card2);border-radius:12px;padding:18px;text-align:center;
+  border:1px solid rgba(255,255,255,.04)}
+.result-stat .num{font-size:2.2rem;font-weight:900;line-height:1}
+.result-stat .num.success{color:var(--green)}
+.result-stat .num.fail{color:var(--red)}
+.result-stat .num.neutral{color:var(--accent)}
+.result-stat .desc{font-size:.8rem;color:var(--text2);margin-top:6px}
+
+/* ── 프로그레스 바 ── */
+.progress-wrap{margin:16px 0}
+.progress-label{display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:6px}
+.progress-bar{height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px;transition:width 1.5s ease-out;width:0}
+.progress-fill.blue-fill{background:linear-gradient(90deg,var(--blue),var(--accent))}
+.progress-fill.green-fill{background:linear-gradient(90deg,var(--green),#69f0ae)}
+
+/* ── 터미널 ── */
+.terminal{background:#0d1117;border:1px solid #30363d;border-radius:12px;margin:16px 0;overflow:hidden}
+.terminal-header{background:#161b22;padding:8px 14px;display:flex;align-items:center;gap:8px}
+.terminal-dot{width:10px;height:10px;border-radius:50%}
+.terminal-dot.r{background:#ff5f57}.terminal-dot.y{background:#febc2e}.terminal-dot.g{background:#28c840}
+.terminal-title{font-size:.75rem;color:#8b949e;margin-left:8px}
+.terminal-body{padding:16px;font-family:ui-monospace,'Cascadia Code',Consolas,monospace;font-size:.85rem;
+  line-height:1.7;color:#c9d1d9;white-space:pre-wrap;overflow-x:auto}
+.terminal-body .prompt{color:var(--green)}.terminal-body .cmd{color:#f0f6fc;font-weight:600}
+.terminal-body .ok{color:var(--green)}.terminal-body .err{color:var(--red)}
+.terminal-body .dim{color:#6e7681}
+
+/* ── 타임라인 ── */
+.timeline{position:relative;padding-left:32px;margin:20px 0}
+.timeline::before{content:'';position:absolute;left:11px;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--accent),var(--accent2),var(--accent3))}
+.tl-item{position:relative;margin:20px 0;padding-left:20px;opacity:0;transform:translateX(-20px);transition:all .5s ease-out}
+.tl-item.visible{opacity:1;transform:translateX(0)}
+.tl-dot{position:absolute;left:-25px;top:4px;width:14px;height:14px;border-radius:50%;border:3px solid var(--accent);
+  background:var(--bg)}
+.tl-item:nth-child(2) .tl-dot{border-color:var(--accent2)}
+.tl-item:nth-child(3) .tl-dot{border-color:var(--green)}
+.tl-item:nth-child(4) .tl-dot{border-color:var(--orange)}
+.tl-item:nth-child(5) .tl-dot{border-color:var(--accent3)}
+.tl-item:nth-child(6) .tl-dot{border-color:var(--green)}
+.tl-step{font-size:.75rem;color:var(--accent);font-weight:600;letter-spacing:1px}
+.tl-title{font-size:1rem;font-weight:600;margin:4px 0}
+.tl-desc{font-size:.88rem;color:var(--text2)}
+
+/* ── GCE 스펙 ── */
+.spec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+.spec-item{background:var(--card2);border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;
+  border:1px solid rgba(255,255,255,.04)}
+.spec-item .spec-icon{font-size:1.5rem;flex-shrink:0}
+.spec-item .spec-label{font-size:.75rem;color:var(--text2)}
+.spec-item .spec-val{font-size:.95rem;font-weight:600}
+
+/* ── 게임 CTA ── */
+.game-cta{background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(123,97,255,.08),rgba(255,107,157,.08));
+  border:1px solid rgba(0,212,255,.15);border-radius:20px;padding:32px;text-align:center;margin:24px 0;
+  position:relative;overflow:hidden}
+.game-cta::before{content:'';position:absolute;inset:-2px;border-radius:22px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));
+  opacity:.15;z-index:0}
+.game-cta>*{position:relative;z-index:1}
+.game-cta h3{font-size:1.3rem;margin-bottom:8px}
+.game-btn{display:inline-block;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;font-weight:700;font-size:1rem;padding:12px 32px;border-radius:30px;text-decoration:none;
+  margin:16px 8px 0;transition:all .3s;box-shadow:0 4px 20px rgba(0,212,255,.3)}
+.game-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(0,212,255,.5)}
+.game-modes{display:flex;justify-content:center;gap:16px;margin-top:20px;flex-wrap:wrap}
+.game-mode{background:var(--card);border-radius:12px;padding:14px 20px;min-width:160px;
+  border:1px solid rgba(255,255,255,.06)}
+.game-mode .gm-icon{font-size:1.5rem}
+.game-mode .gm-title{font-weight:600;font-size:.9rem;margin:4px 0}
+.game-mode .gm-desc{font-size:.78rem;color:var(--text2)}
+
+/* ── 요약 테이블 ── */
+.summary-table{width:100%;border-collapse:separate;border-spacing:0;margin:16px 0;border-radius:12px;overflow:hidden}
+.summary-table th{background:linear-gradient(135deg,rgba(0,212,255,.1),rgba(123,97,255,.1));
+  color:var(--accent);font-weight:600;padding:12px 16px;text-align:left;font-size:.85rem;
+  border-bottom:1px solid rgba(0,212,255,.15)}
+.summary-table td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);font-size:.9rem;color:var(--text2)}
+.summary-table tr:last-child td{border-bottom:none}
+.summary-table tr:hover td{background:rgba(0,212,255,.03)}
+
+/* ── 코드 블록 ── */
+.code-block{background:#0d1117;border-radius:10px;padding:16px;margin:12px 0;
+  font-family:ui-monospace,'Cascadia Code',Consolas,monospace;font-size:.83rem;line-height:1.6;
+  color:#c9d1d9;overflow-x:auto;border:1px solid #30363d}
+.code-block .kw{color:#ff7b72}.code-block .str{color:#a5d6ff}
+.code-block .cmt{color:#6e7681;font-style:italic}
+
+/* ── 복사 버튼 ── */
+.copy-section{text-align:center;margin:60px 0 40px;padding:32px;background:var(--card);border-radius:16px;
+  border:1px solid rgba(255,255,255,.06)}
+.copy-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:12px;
+  padding:14px 36px;font:inherit;font-weight:700;font-size:1rem;cursor:pointer;transition:all .3s;
+  box-shadow:0 4px 20px rgba(0,212,255,.3)}
+.copy-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(0,212,255,.5)}
+.copy-hint{font-size:.85rem;color:var(--text2);margin-top:10px}
+
+/* ── 태그 ── */
+.tag{display:inline-block;font-size:.75rem;font-weight:600;padding:3px 10px;border-radius:20px;margin:2px 3px}
+.tag.t-blue{background:rgba(68,138,255,.15);color:var(--blue)}
+.tag.t-green{background:rgba(0,230,118,.15);color:var(--green)}
+.tag.t-orange{background:rgba(255,171,64,.15);color:var(--orange)}
+.tag.t-pink{background:rgba(255,107,157,.15);color:var(--accent3)}
+
+/* ── 실험 vs 기대 ── */
+.vs-row{display:flex;gap:12px;margin:12px 0;flex-wrap:wrap}
+.vs-box{flex:1;min-width:200px;background:var(--card2);border-radius:10px;padding:14px;border:1px solid rgba(255,255,255,.04)}
+.vs-box h5{font-size:.8rem;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+.vs-box p{font-size:.9rem}
+
+/* ── 애니메이션 ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes countUp{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.shimmer{background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);
+  background-size:200% 100%;animation:shimmer 3s infinite}
+
+/* ── 반응형 ── */
+@media(max-width:600px){
+  .hero h1{font-size:1.6rem}
+  .arch-flow{flex-direction:column;gap:8px}
+  .arch-arrow{transform:rotate(90deg)}
+  .result-grid{grid-template-columns:1fr 1fr}
+  .deploy-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-orb o1"></div>
+<div class="bg-orb o2"></div>
+<div class="bg-orb o3"></div>
+
+<div class="wrap">
+
+<!-- ═══ 히어로 ═══ -->
+<div class="hero">
+  <div class="hero-badge">Module 8 — Learning Summary</div>
+  <h1><span>로드밸런서로<br>무중단 배포 구성하기</span></h1>
+  <p class="hero-sub">서비스를 끄지 않고 새 버전을 배포하는 방법을 배우고, 직접 실험했습니다</p>
+  <div class="hero-quote">서비스를 끄지 않고 새 버전으로 바꾸려면, 로드밸런서가 요청을 다른 서버로 옮기고, 데이터는 서버 밖에 둔다.</div>
+</div>
+
+<!-- ═══ 게임 CTA ═══ -->
+<div class="section" data-anim>
+  <div class="game-cta">
+    <h3>🎮 인터랙티브 학습 게임</h3>
+    <p style="color:var(--text2)">이번 강의 내용을 게임으로 복습할 수 있습니다</p>
+    <a class="game-btn" href="https://gojosuperman.github.io/zero-downtime-deployment-game/" target="_blank">
+      게임 바로가기 →
+    </a>
+    <div class="game-modes">
+      <div class="game-mode"><div class="gm-icon">🧩</div><div class="gm-title">문제게임</div><div class="gm-desc">7 스테이지 퀴즈/매칭/코드조립</div></div>
+      <div class="game-mode"><div class="gm-icon">🔫</div><div class="gm-title">슈팅게임</div><div class="gm-desc">3단계 디펜스/슈터/스나이퍼</div></div>
+      <div class="game-mode"><div class="gm-icon">📖</div><div class="gm-title">정리노트</div><div class="gm-desc">게임 내 요약 열람</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 1. 핵심 개념 ═══ -->
+<div class="section" data-anim>
+  <div class="section-header">
+    <div class="section-icon blue">📚</div>
+    <h2 class="section-title">1. 오늘 배운 핵심 개념</h2>
+  </div>
+
+  <!-- 고가용성 -->
+  <div class="card">
+    <h3>🏥 고가용성 (High Availability)</h3>
+    <p><strong>가용성</strong> = 서비스를 쓸 수 있었던 시간의 비율 → <strong>9의 개수</strong>로 표현</p>
+    <div class="nine-grid">
+      <div class="nine-card"><div class="nine-val">99%</div><div class="nine-label">투 나인</div><div class="nine-time">~3.65일 중단</div></div>
+      <div class="nine-card"><div class="nine-val">99.9%</div><div class="nine-label">쓰리 나인</div><div class="nine-time">~8.8시간</div></div>
+      <div class="nine-card"><div class="nine-val">99.99%</div><div class="nine-label">포 나인</div><div class="nine-time">~53분</div></div>
+      <div class="nine-card"><div class="nine-val">99.999%</div><div class="nine-label">파이브 나인</div><div class="nine-time">~5분</div></div>
+    </div>
+    <ul>
+      <li>고가용성의 3단계: <strong>이중화</strong> → <strong>장애 감지</strong> → <strong>장애 조치</strong></li>
+      <li><strong>SPOF(단일 장애점)</strong>: 하나만 고장 나도 전체가 멈추는 곳 → 이중화로 해결</li>
+      <li><strong>무상태(stateless)</strong>: 서버가 요청 사이에 데이터를 자기 안에 두지 않는 것</li>
+    </ul>
+  </div>
+
+  <!-- 무중단 배포 -->
+  <div class="card">
+    <h3>🔄 무중단 배포 3가지 방식</h3>
+    <div class="deploy-grid">
+      <div class="deploy-card rolling">
+        <h4>롤링</h4>
+        <p>서버를 한 대씩 돌아가며 교체</p>
+        <span class="deploy-tag pro">+ 추가 서버 불필요</span>
+        <span class="deploy-tag con">- 신/구 혼재</span>
+      </div>
+      <div class="deploy-card bluegreen">
+        <h4>블루그린</h4>
+        <p>서버 두 벌 준비, 방향을 한 번에 전환</p>
+        <span class="deploy-tag pro">+ 깔끔한 전환, 빠른 롤백</span>
+        <span class="deploy-tag con">- 서버 2배 필요</span>
+      </div>
+      <div class="deploy-card canary">
+        <h4>카나리</h4>
+        <p>새 버전에 1~10%만 먼저 보내기</p>
+        <span class="deploy-tag pro">+ 위험 최소화</span>
+        <span class="deploy-tag con">- 느리고 모니터링 필요</span>
+      </div>
+    </div>
+    <p style="margin-top:12px">배포 시 지켜야 할 3가지: <span class="tag t-blue">헬스체크</span> <span class="tag t-green">그레이스풀 셧다운</span> <span class="tag t-orange">DB 호환성</span></p>
+  </div>
+
+  <!-- 로드밸런서 & Nginx -->
+  <div class="card">
+    <h3>⚖️ 로드밸런서와 Nginx</h3>
+    <p><strong>로드밸런서</strong> = 요청을 뒤의 서버 중 하나에 넘기는 장치</p>
+    <p>분배 규칙: <span class="tag t-blue">라운드 로빈</span> <span class="tag t-green">최소 연결</span> <span class="tag t-orange">가중치</span> <span class="tag t-pink">IP 해시</span></p>
+    <div class="terminal" style="margin-top:16px">
+      <div class="terminal-header">
+        <div class="terminal-dot r"></div><div class="terminal-dot y"></div><div class="terminal-dot g"></div>
+        <span class="terminal-title">nginx/default.conf</span>
+      </div>
+      <div class="terminal-body"><span class="dim"># 뒷단 서버 그룹</span>
+<span class="cmd">upstream</span> app {
+    zone app 64k;
+    server blue:8080;         <span class="dim"># ← 한 줄만 바꾸면 전환!</span>
+    <span class="dim"># server green:8080;</span>
+}
+
+server {
+    listen 80;
+    location / {
+        <span class="cmd">proxy_pass</span> http://app;
+        proxy_connect_timeout <span class="str">2s</span>;   <span class="dim"># 장애 시 빠른 감지</span>
+    }
+}</div>
+    </div>
+    <p style="margin-top:12px"><code>nginx -t</code> 문법 검사 → <code>nginx -s reload</code> 끊김 없이 적용</p>
+  </div>
+
+  <!-- 아키텍처 -->
+  <div class="card">
+    <h3>🐳 블루그린 아키텍처</h3>
+    <div class="arch-diagram">
+      <div class="arch-flow">
+        <div class="arch-node browser"><span class="icon">🌐</span><span class="label">브라우저</span></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node nginx"><span class="icon">⚖️</span><span class="label">Nginx</span><div style="font-size:.7rem;color:var(--text2)">:8080</div></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-branch">
+          <div class="arch-node server-blue"><span class="icon">🔵</span><span class="label">BLUE</span></div>
+          <div class="arch-node server-green"><span class="icon">🟢</span><span class="label">GREEN</span></div>
+        </div>
+      </div>
+      <p style="color:var(--text2);font-size:.85rem;margin-top:12px">Nginx upstream 한 줄만 바꾸면 트래픽이 즉시 전환됩니다</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 2. 추가 과제 시도 ═══ -->
+<div class="section" data-anim>
+  <div class="section-header">
+    <div class="section-icon purple">📋</div>
+    <h2 class="section-title">2. 추가 과제 시도 기록</h2>
+  </div>
+
+  <div class="card">
+    <h3>📋 과제 1: Docker Compose로 통합</h3>
+    <p>blue, green, bg-nginx, 네트워크를 <code>compose.yaml</code> 하나에 적고 <code>docker compose up</code> 한 번으로 띄우기</p>
+    <div class="terminal">
+      <div class="terminal-header"><div class="terminal-dot r"></div><div class="terminal-dot y"></div><div class="terminal-dot g"></div><span class="terminal-title">compose.yaml</span></div>
+      <div class="terminal-body"><span class="cmd">services:</span>
+  blue:
+    image: friend-agent:local
+    environment: [LLM_PROVIDER=fake, K_REVISION=blue, BANNER=BLUE]
+  green:
+    image: friend-agent:local
+    environment: [LLM_PROVIDER=fake, K_REVISION=green, BANNER=GREEN]
+  bg-nginx:
+    image: nginx:1.27-alpine
+    ports: [<span class="str">"8080:80"</span>]
+    volumes: [<span class="str">./nginx:/etc/nginx/conf.d</span>]
+    depends_on: [blue, green]
+
+<span class="cmd">networks:</span>
+  bg-lab:
+    driver: bridge</div>
+    </div>
+    <p style="margin-top:8px"><span class="tag t-green">✅ 검증</span> <code>docker compose down && up -d</code> 반복 시 동일 구성 재현</p>
+  </div>
+
+  <div class="card">
+    <h3>📋 과제 2: 롤링 배포 (Nginx)</h3>
+    <p>컨테이너 3개를 upstream에 두고, 한 대씩 <code>down</code> → 교체 → 복귀를 반복</p>
+    <p><span class="tag t-green">✅ 검증</span> 이전/새 버전이 섞여 찍히다가 새 버전만 남음, 실패 0건</p>
+  </div>
+
+  <div class="card">
+    <h3>📋 과제 3: 능동 헬스체크 스크립트</h3>
+    <p>2초마다 green의 <code>/health</code>를 확인하고 2회 연속 실패 시 upstream에서 제거 + reload</p>
+    <p><span class="tag t-green">✅ 검증</span> <code>docker stop green</code> 후 자동 감지 및 제거 확인</p>
+  </div>
+</div>
+
+<!-- ═══ 3. 직접 해 본 블루그린 실험 ═══ -->
+<div class="section" data-anim>
+  <div class="section-header">
+    <div class="section-icon green">🧪</div>
+    <h2 class="section-title">3. 직접 해 본 블루그린 실험 (로컬 + GCE)</h2>
+  </div>
+
+  <!-- 로컬 실험 -->
+  <div class="card">
+    <h3>🖥 로컬 Docker Compose 실험</h3>
+    <p>로컬 WSL2 환경에서 <code>compose.yaml</code> 하나로 blue, green, bg-nginx 세 컨테이너를 띄우고 실험했습니다.</p>
+  </div>
+
+  <!-- 실험 1 -->
+  <div class="card">
+    <h3 style="color:var(--green)">✅ 실험 1: 블루그린 전환 — 실패 0건</h3>
+    <div class="terminal">
+      <div class="terminal-header"><div class="terminal-dot r"></div><div class="terminal-dot y"></div><div class="terminal-dot g"></div><span class="terminal-title">블루→그린 전환 명령</span></div>
+      <div class="terminal-body"><span class="prompt">$</span> <span class="cmd">sed -i 's/server blue:8080;/server green:8080;/' nginx/default.conf</span>
+<span class="prompt">$</span> <span class="cmd">docker exec bg-nginx nginx -t && docker exec bg-nginx nginx -s reload</span>
+nginx: configuration file /etc/nginx/nginx.conf test is <span class="ok">successful</span>
+signal process started</div>
+    </div>
+
+    <div class="result-grid">
+      <div class="result-stat"><div class="num neutral" data-count="43">0</div><div class="desc">총 요청</div></div>
+      <div class="result-stat"><div class="num success" data-count="0">0</div><div class="desc">실패</div></div>
+      <div class="result-stat"><div class="num neutral" data-count="18">0</div><div class="desc">BLUE 응답</div></div>
+      <div class="result-stat"><div class="num neutral" data-count="25">0</div><div class="desc">GREEN 응답</div></div>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-header"><div class="terminal-dot r"></div><div class="terminal-dot y"></div><div class="terminal-dot g"></div><span class="terminal-title">watch.sh 실행 결과</span></div>
+      <div class="terminal-body"><span class="dim">▶ 측정 시작 (30초, 0.2초 간격)</span>
+[10:47:32] <span class="ok">✅ blue</span>
+[10:47:32] <span class="ok">✅ blue</span>
+[10:47:33] <span class="ok">✅ blue</span>
+  <span class="dim">... (18건 blue) ...</span>
+[10:47:38] <span class="ok">✅ green</span>   <span class="dim">← 전환 순간</span>
+[10:47:38] <span class="ok">✅ green</span>
+  <span class="dim">... (25건 green) ...</span>
+
+<span class="cmd">=== 요약 ===</span>
+총 요청: <span class="str">43</span>
+실패: <span class="ok">0</span>
+blue: 18건
+green: 25건</div>
+    </div>
+    <p style="margin-top:8px"><strong>결론:</strong> <code>nginx -s reload</code> 한 번으로 끊김 없이 전환 완료</p>
+  </div>
+
+  <!-- 실험 2 -->
+  <div class="card">
+    <h3 style="color:var(--orange)">⚖️ 실험 2: 가중치 카나리 (3:1)</h3>
+    <div class="terminal">
+      <div class="terminal-header"><div class="terminal-dot r"></div><div class="terminal-dot y"></div><div class="terminal-dot g"></div><span class="terminal-title">nginx/default.conf — 가중치 설정</span></div>
+      <div class="terminal-body">upstream app {
+    server blue:8080  <span class="str">weight=3</span>;
+    server green:8080 <span class="str">weight=1</span>;
+}</div>
+    </div>
+    <div class="result-grid">
+      <div class="result-stat"><div class="num neutral" data-count="20">0</div><div class="desc">총 요청</div></div>
+      <div class="result-stat"><div class="num neutral" data-count="15">0</div><div class="desc">BLUE (75%)</div></div>
+      <div class="result-stat"><div class="num neutral" data-count="5">0</div><div class="desc">GREEN (25%)</div></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>🔵 BLUE — 15건</span><span>75%</span></div>
+      <div class="progress-bar"><div class="progress-fill blue-fill" data-width="75"></div></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>🟢 GREEN — 5건</span><span>25%</span></div>
+      <div class="progress-bar"><div class="progress-fill green-fill" data-width="25"></div></div>
+    </div>
+    <p style="margin-top:8px"><strong>결론:</strong> 정확히 3:1 비율로 분산 — 카나리 배포의 기본 원리 확인</p>
+  </div>
+
+  <!-- 실험 3 -->
+  <div class="card">
+    <h3 style="color:var(--red)">💥 실험 3: 서버 장애 시뮬레이션</h3>
+    <p>가중치 3:1 상태에서 <code>docker stop green</code> 실행</p>
+    <div class="result-grid">
+      <div class="result-stat"><div class="num neutral" data-count="39">0</div><div class="desc">총 요청</div></div>
+      <div class="result-stat"><div class="num fail" data-count="4">0</div><div class="desc">실패</div></div>
+      <div class="result-stat"><div class="num neutral" data-count="35">0</div><div class="desc">성공</div></div>
+    </div>
+    <div class="vs-row">
+      <div class="vs-box"><h5>원인</h5><p><code>proxy_connect_timeout 2s</code> 동안 멈춘 green에 연결 시도 → 타임아웃 후 실패</p></div>
+      <div class="vs-box"><h5>교훈</h5><p>이것이 <strong>수동 헬스체크의 한계</strong> — 사용자 요청이 실패해야 고장을 알아챔. 능동 헬스체크 필요!</p></div>
+    </div>
+  </div>
+
+  <!-- GCE 배포 -->
+  <div class="card">
+    <h3>☁️ GCE VM 배포 실험</h3>
+    <p>로컬에서 검증한 동일한 구성을 <strong>Google Cloud VM</strong>에 올려 외부 접속까지 확인했습니다.</p>
+
+    <div class="spec-grid">
+      <div class="spec-item"><span class="spec-icon">💻</span><div><div class="spec-label">VM</div><div class="spec-val">bluegreen-vm</div></div></div>
+      <div class="spec-item"><span class="spec-icon">⚙️</span><div><div class="spec-label">머신 타입</div><div class="spec-val">e2-medium</div></div></div>
+      <div class="spec-item"><span class="spec-icon">🐧</span><div><div class="spec-label">OS</div><div class="spec-val">Ubuntu 24.04</div></div></div>
+      <div class="spec-item"><span class="spec-icon">📍</span><div><div class="spec-label">리전</div><div class="spec-val">서울 (asia-ne3)</div></div></div>
+      <div class="spec-item"><span class="spec-icon">🌐</span><div><div class="spec-label">외부 IP</div><div class="spec-val">34.50.46.228</div></div></div>
+      <div class="spec-item"><span class="spec-icon">🔌</span><div><div class="spec-label">포트</div><div class="spec-val">:8080</div></div></div>
+    </div>
+  </div>
+
+  <!-- GCE 타임라인 -->
+  <div class="card">
+    <h3>📦 GCE 구축 순서</h3>
+    <div class="timeline">
+      <div class="tl-item" data-anim-tl>
+        <div class="tl-dot"></div>
+        <div class="tl-step">STEP 1</div>
+        <div class="tl-title">프로젝트 생성</div>
+        <div class="tl-desc"><code>gcloud projects create bluegreen-lab-2026</code> → 결제 연결 → Compute Engine API 활성화</div>
+      </div>
+      <div class="tl-item" data-anim-tl>
+        <div class="tl-dot"></div>
+        <div class="tl-step">STEP 2</div>
+        <div class="tl-title">VM 생성</div>
+        <div class="tl-desc"><code>gcloud compute instances create</code> (e2-medium, Ubuntu, 20GB) + 방화벽 TCP 8080</div>
+      </div>
+      <div class="tl-item" data-anim-tl>
+        <div class="tl-dot"></div>
+        <div class="tl-step">STEP 3</div>
+        <div class="tl-title">Docker 환경 구축</div>
+        <div class="tl-desc">SSH 접속 → Docker 설치 → friend-agent 클론 + 이미지 빌드</div>
+      </div>
+      <div class="tl-item" data-anim-tl>
+        <div class="tl-dot"></div>
+        <div class="tl-step">STEP 4</div>
+        <div class="tl-title">서비스 시작</div>
+        <div class="tl-desc"><code>docker compose up -d</code> → 외부 브라우저에서 BLUE 배너 확인 ✅</div>
+      </div>
+      <div class="tl-item" data-anim-tl>
+        <div class="tl-dot"></div>
+        <div class="tl-step">STEP 5</div>
+        <div class="tl-title">블루그린 전환 성공</div>
+        <div class="tl-desc"><code>sed</code> + <code>nginx -s reload</code> → GREEN 전환 확인 ✅</div>
+      </div>
+      <div class="tl-item" data-anim-tl>
+        <div class="tl-dot"></div>
+        <div class="tl-step">STEP 6</div>
+        <div class="tl-title">비용 관리</div>
+        <div class="tl-desc"><code>gcloud compute instances stop</code>으로 일시정지 (과금 중지)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VM 비용 관리 -->
+  <div class="card">
+    <h3>💰 VM 비용 관리 명령</h3>
+    <div class="terminal">
+      <div class="terminal-header"><div class="terminal-dot r"></div><div class="terminal-dot y"></div><div class="terminal-dot g"></div><span class="terminal-title">gcloud CLI</span></div>
+      <div class="terminal-body"><span class="dim"># 일시정지 (과금 중지)</span>
+<span class="prompt">$</span> <span class="cmd">gcloud compute instances stop bluegreen-vm --zone=asia-northeast3-a</span>
+
+<span class="dim"># 다시 시작</span>
+<span class="prompt">$</span> <span class="cmd">gcloud compute instances start bluegreen-vm --zone=asia-northeast3-a</span>
+
+<span class="dim"># 완전 삭제</span>
+<span class="prompt">$</span> <span class="cmd">gcloud compute instances delete bluegreen-vm --zone=asia-northeast3-a</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 4. 인터랙티브 학습 게임 ═══ -->
+<div class="section" data-anim>
+  <div class="section-header">
+    <div class="section-icon pink">🎮</div>
+    <h2 class="section-title">4. 인터랙티브 학습 게임</h2>
+  </div>
+  <div class="card">
+    <p>📎 <strong>첨부 파일: <code>8강 로드밸런서로 무중단 배포 구성하기.html</code></strong></p>
+    <p>이 HTML 파일을 브라우저에서 열면 다음 두 가지 학습 모드를 사용할 수 있습니다:</p>
+    <ul>
+      <li><strong>🧩 문제게임</strong> — 7개 스테이지의 퀴즈/매칭/코드조립 미션으로 핵심 개념 복습</li>
+      <li><strong>🔫 슈팅게임</strong> — 3단계 슈팅 게임으로 로드밸런서·장애 대응·Nginx 설정을 체험
+        <ul>
+          <li>Stage 1: 로드밸런서 디펜스 (요청을 올바른 서버로 라우팅)</li>
+          <li>Stage 2: 패킷 슈터 (장애물을 맞는 해결책으로 격파)</li>
+          <li>Stage 3: 블루그린 스나이퍼 (Nginx 설정 코드를 조준해서 선택)</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ 5. 한 장 요약 ═══ -->
+<div class="section" data-anim>
+  <div class="section-header">
+    <div class="section-icon orange">📝</div>
+    <h2 class="section-title">5. 한 장 요약</h2>
+  </div>
+  <div class="card">
+    <table class="summary-table">
+      <tr><th style="width:120px">핵심</th><th>내용</th></tr>
+      <tr><td><strong>가용성</strong></td><td>9의 개수로 말한다. 고가용성 = 이중화 + 장애 감지 + 장애 조치</td></tr>
+      <tr><td><strong>무상태</strong></td><td>상태를 서버 밖 DB에 둬야 서버를 마음대로 늘리고 바꿀 수 있다</td></tr>
+      <tr><td><strong>배포 방식</strong></td><td>롤링·블루그린·카나리 — 모두 로드밸런서가 요청 보내는 곳을 바꾸는 방법</td></tr>
+      <tr><td><strong>배포 조건</strong></td><td>헬스체크, 그레이스풀 셧다운, DB 호환성</td></tr>
+      <tr><td><strong>Nginx</strong></td><td>upstream 한 줄로 블루그린 전환, weight로 카나리</td></tr>
+      <tr><td><strong>안전 절차</strong></td><td>nginx -t 검사 후 nginx -s reload — 끊기는 요청 없음</td></tr>
+      <tr><td><strong>timeout</strong></td><td>proxy_connect_timeout을 줄이면 장애 시 사용자 대기 시간 줄어듦</td></tr>
+      <tr><td><strong>데이터</strong></td><td>Supabase로 데이터를 밖에 두면 전환해도 대화가 이어짐</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ 복사 ═══ -->
+<div class="copy-section">
+  <p style="font-size:1.1rem;font-weight:600;margin-bottom:8px">노션에 붙여넣기</p>
+  <button class="copy-btn" onclick="copyMD()">📋 마크다운 복사</button>
+  <p class="copy-hint">복사한 뒤 노션에서 Ctrl+V 하면 자동 서식 적용됩니다</p>
+</div>
+
+</div><!-- .wrap -->
+
+<script>
+// ── 스크롤 애니메이션 ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); }});
+}, {threshold: 0.1});
+document.querySelectorAll('.section[data-anim]').forEach(el => observer.observe(el));
+document.querySelectorAll('.tl-item[data-anim-tl]').forEach((el, i) => {
+  const tlObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ setTimeout(() => e.target.classList.add('visible'), i * 150); }});
+  }, {threshold: 0.2});
+  tlObs.observe(el);
+});
+
+// ── 카운터 애니메이션 ──
+const countObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(!e.isIntersecting) return;
+    const el = e.target;
+    const target = parseInt(el.dataset.count);
+    if(el.dataset.done) return;
+    el.dataset.done = '1';
+    let current = 0;
+    const step = Math.max(1, Math.ceil(target / 30));
+    const timer = setInterval(() => {
+      current += step;
+      if(current >= target){ current = target; clearInterval(timer); }
+      el.textContent = current;
+    }, 30);
+  });
+}, {threshold: 0.5});
+document.querySelectorAll('[data-count]').forEach(el => countObserver.observe(el));
+
+// ── 프로그레스 바 애니메이션 ──
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){ e.target.style.width = e.target.dataset.width + '%'; }
+  });
+}, {threshold: 0.3});
+document.querySelectorAll('.progress-fill').forEach(el => barObserver.observe(el));
+
+// ── 마크다운 복사 ──
+const md = `# 8강. 로드밸런서로 무중단 배포 구성하기 — 학습 정리
+
+## 📌 오늘 한 문장 요약
+
+> **"서비스를 끄지 않고 새 버전으로 바꾸려면, 로드밸런서가 요청을 다른 서버로 옮기고, 데이터는 서버 밖에 둔다."**
+
+---
+
+## 🎮 인터랙티브 학습 게임
+
+> 이번 강의 내용을 **게임으로 복습**할 수 있는 인터랙티브 페이지를 만들었습니다.
+
+**👉 [게임 바로가기](https://gojosuperman.github.io/zero-downtime-deployment-game/)**
+
+| 모드 | 내용 |
+|------|------|
+| 🧩 **문제게임** (7 스테이지) | OX퀴즈 · 객관식 · 매칭 · 코드조립 · 시뮬레이션으로 핵심 개념 복습 |
+| 🔫 **슈팅게임** (3 스테이지) | 로드밸런서 디펜스 · 패킷 슈터 · 블루그린 스나이퍼 — 마우스로 조작하는 게임형 학습 |
+| 📖 **정리노트** | 아래 학습 내용과 동일한 요약 노트를 게임 안에서도 열람 가능 |
+
+---
+
+## 1. 오늘 배운 핵심 개념
+
+### 🏥 고가용성 (High Availability)
+- **가용성** = 서비스를 쓸 수 있었던 시간의 비율 → 9의 개수로 표현
+
+| 가용성 | 부르는 말 | 1년 중 멈춰도 되는 시간 |
+|--------|-----------|------------------------|
+| 99% | 투 나인 | 약 **3.65일** |
+| 99.9% | 쓰리 나인 | 약 **8.8시간** |
+| 99.99% | 포 나인 | 약 **53분** |
+| 99.999% | 파이브 나인 | 약 **5분** |
+
+- 고가용성의 3단계: **이중화** → **장애 감지** → **장애 조치**
+- **SPOF(단일 장애점)**: 하나만 고장 나도 전체가 멈추는 곳 → 이중화로 해결
+- **무상태(stateless)**: 서버가 요청 사이에 데이터를 자기 안에 두지 않는 것 → 서버를 자유롭게 늘리고/빼고/바꿀 수 있음
+
+### 🔄 무중단 배포 3가지 방식
+
+| 방식 | 원리 | 장점 | 단점 |
+|------|------|------|------|
+| **롤링** | 서버를 한 대씩 돌아가며 교체 | 추가 서버 불필요 | 교체 중 신·구 버전이 함께 요청 받음 |
+| **블루그린** | 서버 두 벌 준비, 로드밸런서 방향을 한 번에 전환 | 깔끔한 전환, 빠른 롤백 | 서버가 두 배 필요 |
+| **카나리** | 새 버전에 1~10%만 먼저 보내고 점점 늘림 | 위험 최소화 | 모니터링 필요, 느림 |
+
+배포 시 지켜야 할 3가지: **① 헬스체크** · **② 그레이스풀 셧다운** · **③ DB 호환성**
+
+### ⚖️ 로드밸런서와 Nginx
+
+- **로드밸런서** = 요청을 뒤의 서버 중 하나에 넘기는 장치
+- 분배 규칙: 라운드 로빈, 최소 연결, 가중치, IP 해시
+- Nginx 핵심 설정:
+  - \`upstream { }\` — 뒷단 서버 그룹 정의
+  - \`proxy_pass\` — 요청을 뒷단 서버로 전달
+  - \`weight=3\` — 3배 많이 보냄
+  - \`proxy_connect_timeout 2s\` — 연결 대기 시간 (기본 60초 → 줄여야 장애 시 빠른 전환)
+  - \`nginx -t\` — 문법 검사 → \`nginx -s reload\` — 끊기는 요청 없이 설정 적용
+
+### 🐳 로컬 블루그린 구조
+
+\`\`\`
+브라우저 → Nginx(bg-nginx) → blue / green 서버
+\`\`\`
+
+### 💾 데이터를 컨테이너 밖으로 (Supabase)
+- 전환 시 대화가 사라지는 이유: 데이터가 **컨테이너 메모리**에만 있기 때문
+- Supabase(PostgreSQL)에 데이터를 옮기면 컨테이너는 **무상태**가 됨
+- 결과: 어느 쪽으로 전환해도, 컨테이너를 다시 시작해도 **대화가 그대로 유지**
+
+---
+
+## 2. 추가 과제 시도 기록
+
+### 📋 과제 1: Docker Compose로 통합
+\`compose.yaml\` 하나로 blue, green, bg-nginx를 한 번에 띄우기 ✅
+
+### 📋 과제 2: 롤링 배포 (Nginx)
+컨테이너 3개를 upstream에 두고 한 대씩 down → 교체 → 복귀 반복 ✅
+
+### 📋 과제 3: 능동 헬스체크 스크립트
+2초마다 /health 확인, 2회 연속 실패 시 upstream 제거 + reload ✅
+
+---
+
+## 3. 직접 해 본 블루그린 실험 (로컬 + GCE)
+
+### 🖥 로컬 Docker Compose 실험
+
+\`compose.yaml\` 하나로 blue, green, bg-nginx 세 컨테이너를 띄우고 실험했습니다.
+
+#### 실험 1: 블루그린 전환 (실패 0건)
+
+\`\`\`bash
+# upstream 줄을 green으로 바꾸고 reload
+sed -i 's/server blue:8080;/server green:8080;/' nginx/default.conf
+docker exec bg-nginx nginx -t && docker exec bg-nginx nginx -s reload
+\`\`\`
+
+0.2초 간격으로 43건 요청 → **실패 0건**, blue 18건 → green 25건으로 끊김 없이 전환됨
+
+#### 실험 2: 가중치 카나리 (3:1)
+
+\`\`\`nginx
+upstream app {
+    server blue:8080 weight=3;
+    server green:8080 weight=1;
+}
+\`\`\`
+
+20건 요청 → blue 15건 : green 5건 (정확히 3:1 비율)
+
+#### 실험 3: 서버 장애 (docker stop)
+
+가중치 3:1 상태에서 \`docker stop green\` 실행
+
+- 총 39건 중 **실패 4건** 발생
+- 원인: \`proxy_connect_timeout 2s\` 동안 멈춘 green에 연결 시도 → 타임아웃 후 실패 처리
+- 이것이 **수동 헬스체크의 한계** — 사용자 요청이 실패해야 고장을 알아챔
+
+### ☁️ GCE VM 배포 실험
+
+로컬에서 검증한 동일한 구성을 **Google Cloud VM**에 올려 외부 접속까지 확인했습니다.
+
+| 항목 | 값 |
+|------|-----|
+| VM | \`bluegreen-vm\` (e2-medium, Ubuntu 24.04) |
+| 리전 | asia-northeast3-a (서울) |
+| 외부 IP | \`34.50.46.228:8080\` |
+| 프로젝트 | \`bluegreen-lab-2026\` |
+
+**구축 순서:**
+1. \`gcloud projects create\` → 결제 연결 → Compute Engine API 활성화
+2. \`gcloud compute instances create\` (e2-medium, Ubuntu, 20GB)
+3. 방화벽 규칙: TCP 8080 허용
+4. VM SSH 접속 → Docker 설치 → friend-agent 클론 + 이미지 빌드
+5. \`docker compose up -d\` → 외부 브라우저에서 BLUE 배너 확인
+6. \`sed\` + \`nginx -s reload\` → GREEN 전환 성공
+
+**VM 비용 관리:**
+\`\`\`bash
+# 일시정지 (과금 중지)
+gcloud compute instances stop bluegreen-vm --zone=asia-northeast3-a
+# 다시 시작
+gcloud compute instances start bluegreen-vm --zone=asia-northeast3-a
+# 완전 삭제
+gcloud compute instances delete bluegreen-vm --zone=asia-northeast3-a
+\`\`\`
+
+---
+
+## 4. 인터랙티브 학습 게임
+
+> 📎 **첨부 파일: \`8강 로드밸런서로 무중단 배포 구성하기.html\`**
+>
+> - **🧩 문제게임** — 7개 스테이지의 퀴즈/매칭/코드조립 미션으로 핵심 개념 복습
+> - **🔫 슈팅게임** — 3단계 슈팅 게임으로 로드밸런서·장애 대응·Nginx 설정을 체험
+
+---
+
+## 5. 한 장 요약
+
+| 핵심 | 내용 |
+|------|------|
+| 가용성 | 9의 개수로 말한다. 고가용성 = 이중화 + 장애 감지 + 장애 조치 |
+| 무상태 | 상태를 서버 밖 DB에 둬야 서버를 마음대로 늘리고 바꿀 수 있다 |
+| 배포 방식 | 롤링·블루그린·카나리 — 모두 로드밸런서가 요청 보내는 곳을 바꾸는 방법 |
+| 배포 조건 | 헬스체크, 그레이스풀 셧다운, DB 호환성 |
+| Nginx | upstream 한 줄로 블루그린 전환, weight로 카나리 |
+| 안전 절차 | nginx -t 검사 후 nginx -s reload — 끊기는 요청 없음 |
+| timeout | proxy_connect_timeout을 줄이면 장애 시 사용자 대기 시간 줄어듦 |
+| 데이터 | Supabase로 데이터를 밖에 두면 전환해도 대화가 이어짐 |
+`;
+
+function copyMD(){
+  navigator.clipboard.writeText(md).then(()=>{
+    const btn=document.querySelector('.copy-btn');
+    btn.textContent='✅ 복사 완료!';
+    btn.style.background='linear-gradient(135deg,#00e676,#69f0ae)';
+    setTimeout(()=>{btn.textContent='📋 마크다운 복사';btn.style.background=''},2000);
+  });
+}
+</script>
+</body>
+</html>
